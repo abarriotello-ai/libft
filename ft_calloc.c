@@ -6,7 +6,7 @@
 /*   By: abarrio <abarrio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 13:25:04 by abarrio           #+#    #+#             */
-/*   Updated: 2025/10/24 00:57:03 by abarrio          ###   ########.fr       */
+/*   Updated: 2025/11/17 11:53:19 by abarrio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,9 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	void	*ptr;
 	size_t	total;
 
-	if (nmemb != 0 && size != 0 && (nmemb * size) > (size_t) - 1)
+	if (nmemb != 0 && size != 0 && nmemb > ((size_t) - 1) / size)
 		return (NULL);
 	total = nmemb * size;
-	if (total == 0)
-		total = 1;
 	ptr = malloc(total);
 	if (!ptr)
 		return (NULL);
