@@ -1,6 +1,6 @@
-# Libft - My First C Library
-
 *This project was created as part of the curriculum of 42 by abarrio.*
+
+# Libft - My First C Library
 
 ---
 
