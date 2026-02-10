@@ -1,298 +1,467 @@
-[libft.pdf](https://github.com/user-attachments/files/24056884/libft.pdf)
+# Libft - My First C Library
 
-# Libft – 42 Common Core Project  
-A custom implementation of essential C standard library functions.
-
----
-
-# 📌 Table of Contents
-- [📖 Introduction](#-introduction)
-- [📁 Repository Structure](#-repository-structure)
-- [⚙️ Compilation](#️-compilation)
-- [🧰 Usage](#-usage)
-- [📚 Mandatory Functions](#-mandatory-functions)
-  - [1️⃣ Character Checks](#1️⃣-character-checks)
-  - [2️⃣ Memory Functions](#2️⃣-memory-functions)
-  - [3️⃣ String Functions](#3️⃣-string-functions)
-  - [4️⃣ Safe String Ops (BSD)](#4️⃣-safe-string-ops-bsd)
-  - [5️⃣ Conversions & Allocation](#5️⃣-conversions--allocation)
-  - [6️⃣ Advanced String Manipulation](#6️⃣-advanced-string-manipulation)
-  - [7️⃣ File Descriptor Output](#7️⃣-file-descriptor-output)
-- [🌿 Bonus Functions (Linked Lists)](#-bonus-functions-linked-lists)
+*This project was created as part of the curriculum of 42 by abarrio.*
 
 ---
 
-# 📖 Introduction
+## 📋 Table of Contents
 
-**Libft** is the first project in the 42 cursus.  
-Its purpose is to reimplement essential parts of the C standard library **from scratch**, gaining a deep understanding of low-level programming, memory manipulation, and data structures.
-
-You will:
-- Recreate many libc functions (`memcpy`, `strchr`, `atoi`, etc.)
-- Implement safer alternatives (`strlcpy`, `strlcat`)
-- Handle dynamic memory allocation
-- Write higher-order string functions
-- Build your own **linked list library** (bonus)
-
-The final output is your own static library:
-
-```
-libft.a
-```
+- [Description](#description)
+- [Instructions](#instructions)
+- [Library Functions](#library-functions)
+- [Technical Decisions](#technical-decisions)
+- [Resources](#resources)
+- [Testing](#testing)
+- [Author](#author)
 
 ---
 
-# 📁 Repository Structure
+## 📖 Description
 
-```
-libft/
- ├── Makefile
- ├── libft.h
- ├── ft_*.c
- ├── ft_*_bonus.c
- └── libft.a   (generated after compilation)
-```
+**Libft** is the first project in the 42 curriculum and serves as a foundational C library. The goal is to recreate a collection of standard C library functions, along with additional utility functions that will be reused throughout the entire 42 cursus.
+
+### Project Objectives
+
+- **Understand** how standard C library functions work internally by implementing them from scratch
+- **Master** fundamental C programming concepts including memory management, pointers, and data structures
+- **Build** a personal library that will serve as a toolkit for future 42 projects
+- **Learn** proper code organization, compilation processes, and the creation of static libraries
+
+### What is Libft?
+
+Libft is a static library (`libft.a`) containing 43 functions divided into three categories:
+
+1. **Part 1 (23 functions)**: Reimplementations of standard C library functions (libc)
+2. **Part 2 (11 functions)**: Additional utility functions not present in the standard library
+3. **Bonus (9 functions)**: Linked list manipulation functions
+
+This library becomes a crucial foundation for subsequent 42 projects where external libraries are often restricted.
 
 ---
 
-# ⚙️ Compilation
+## 🛠️ Instructions
+
+### Prerequisites
+
+- GCC or Clang compiler
+- Make utility
+- A Unix-like operating system (Linux, macOS, or WSL on Windows)
+
+### Compilation
+
+The project includes a comprehensive Makefile with the following rules:
+
+#### Basic Compilation
 
 ```bash
-make          # compile mandatory part
-make bonus    # compile bonus (linked lists)
-make clean    # remove .o files
-make fclean   # clean + remove libft.a
-make re       # full rebuild
+# Compile the mandatory part (creates libft.a)
+make
+
+# or explicitly
+make all
 ```
 
-All files must compile with:
+#### Compile with Bonus
 
+```bash
+# Compile including bonus functions
+make bonus
 ```
-Wall -Wextra -Werror
+
+#### Clean Object Files
+
+```bash
+# Remove .o object files
+make clean
 ```
 
----
+#### Full Clean
 
-# 🧰 Usage
+```bash
+# Remove .o files and libft.a
+make fclean
+```
 
-Include the header:
+#### Recompile
+
+```bash
+# Remove everything and recompile
+make re
+```
+
+### Using the Library
+
+Once compiled, you can use the library in your own C programs:
 
 ```c
+// your_program.c
 #include "libft.h"
+
+int main(void)
+{
+    char *str = ft_strdup("Hello, Libft!");
+    ft_putendl_fd(str, 1);
+    free(str);
+    return (0);
+}
 ```
 
-Compile your program with:
+Compile your program with the library:
 
 ```bash
-cc main.c -L./libft -lft -I./libft -o program
+gcc your_program.c -L. -lft -o your_program
+./your_program
 ```
 
----
+Or directly:
 
-# 📚 Mandatory Functions
+```bash
+gcc your_program.c libft.a -o your_program
+./your_program
+```
 
----
+### Compilation Flags
 
-# 1️⃣ Character Checks
+All source files are compiled with the following flags as required by 42:
 
-## `int ft_isalpha(int c);`
-Checks if character is alphabetical.
+- `-Wall`: Enable all warnings
+- `-Wextra`: Enable extra warnings
+- `-Werror`: Treat warnings as errors
 
-## `int ft_isdigit(int c);`
-Checks if character is a digit (0–9).
-
-## `int ft_isalnum(int c);`
-Checks if character is alphanumeric.
-
-## `int ft_isascii(int c);`
-Checks if value is within ASCII range.
-
-## `int ft_isprint(int c);`
-Checks if character is printable.
-
-## `int ft_toupper(int c);`
-Converts lowercase to uppercase.
-
-## `int ft_tolower(int c);`
-Converts uppercase to lowercase.
+This ensures code quality and adherence to best practices.
 
 ---
 
-# 2️⃣ Memory Functions
+## 📚 Library Functions
 
-## `void ft_bzero(void *s, size_t n);`
-Sets `n` bytes to zero.
+### Part 1: Libc Functions (23 functions)
 
-## `void *ft_memset(void *b, int c, size_t len);`
-Fills memory with a byte value.
+These functions replicate the behavior of standard C library functions.
 
-## `void *ft_memcpy(void *dst, const void *src, size_t n);`
-Copies `n` bytes from `src` to `dst`.  
-Does **not** handle overlap.
+#### Character Classification
 
-## `void *ft_memmove(void *dst, const void *src, size_t len);`
-Safe copy even if the memory areas overlap.
+| Function | Description | Return Value |
+|----------|-------------|--------------|
+| `ft_isalpha` | Check if character is alphabetic | 1 if true, 0 otherwise |
+| `ft_isdigit` | Check if character is a digit | 1 if true, 0 otherwise |
+| `ft_isalnum` | Check if character is alphanumeric | 1 if true, 0 otherwise |
+| `ft_isascii` | Check if character is ASCII (0-127) | 1 if true, 0 otherwise |
+| `ft_isprint` | Check if character is printable | 1 if true, 0 otherwise |
 
-## `void *ft_memchr(const void *s, int c, size_t n);`
-Searches for byte `c` in the first `n` bytes of memory `s`.
+#### String Manipulation
 
-## `int ft_memcmp(const void *s1, const void *s2, size_t n);`
-Compares first `n` bytes of memory.
+| Function | Description |
+|----------|-------------|
+| `ft_strlen` | Calculate string length |
+| `ft_strlcpy` | Size-bounded string copy |
+| `ft_strlcat` | Size-bounded string concatenation |
+| `ft_strchr` | Locate first occurrence of character |
+| `ft_strrchr` | Locate last occurrence of character |
+| `ft_strncmp` | Compare strings up to n bytes |
+| `ft_strnstr` | Locate substring in string |
+| `ft_strdup` | Duplicate string (with malloc) |
 
----
+#### Memory Manipulation
 
-# 3️⃣ String Functions
+| Function | Description |
+|----------|-------------|
+| `ft_memset` | Fill memory with constant byte |
+| `ft_bzero` | Zero a byte string |
+| `ft_memcpy` | Copy memory area |
+| `ft_memmove` | Copy memory area (handles overlap) |
+| `ft_memchr` | Locate byte in memory |
+| `ft_memcmp` | Compare memory areas |
 
-## `size_t ft_strlen(const char *s);`
-Returns the length of a string.
+#### Character Conversion
 
-## `char *ft_strchr(const char *s, int c);`
-Finds first occurrence of character.
+| Function | Description |
+|----------|-------------|
+| `ft_toupper` | Convert character to uppercase |
+| `ft_tolower` | Convert character to lowercase |
+| `ft_atoi` | Convert string to integer |
 
-## `char *ft_strrchr(const char *s, int c);`
-Finds last occurrence of character.
+#### Memory Allocation
 
-## `int ft_strncmp(const char *s1, const char *s2, size_t n);`
-Compares strings.
+| Function | Description |
+|----------|-------------|
+| `ft_calloc` | Allocate and zero memory |
 
-## `char *ft_strdup(const char *s1);`
-Duplicates a string.
+### Part 2: Additional Functions (11 functions)
 
-## `char *ft_strnstr(const char *haystack, const char *needle, size_t len);`
-Searches substring with length restriction.
+Custom utility functions for common string and I/O operations.
 
----
+#### String Creation & Manipulation
 
-# 4️⃣ Safe String Ops (BSD)
+| Function | Description | Allocates Memory |
+|----------|-------------|------------------|
+| `ft_substr` | Extract substring from string | Yes (malloc) |
+| `ft_strjoin` | Concatenate two strings | Yes (malloc) |
+| `ft_strtrim` | Trim characters from start and end | Yes (malloc) |
+| `ft_split` | Split string by delimiter into array | Yes (malloc) |
+| `ft_itoa` | Convert integer to string | Yes (malloc) |
 
-## `size_t ft_strlcpy(char *dst, const char *src, size_t dstsize);`
-Safe copy with null-termination.
+#### Function Application
 
-## `size_t ft_strlcat(char *dst, const char *src, size_t dstsize);`
-Safe concatenation preserving buffer size.
+| Function | Description |
+|----------|-------------|
+| `ft_strmapi` | Apply function to each character (creates new string) |
+| `ft_striteri` | Apply function to each character (modifies in place) |
 
----
+#### File Descriptor Output
 
-# 5️⃣ Conversions & Allocation
+| Function | Description |
+|----------|-------------|
+| `ft_putchar_fd` | Write character to file descriptor |
+| `ft_putstr_fd` | Write string to file descriptor |
+| `ft_putendl_fd` | Write string + newline to file descriptor |
+| `ft_putnbr_fd` | Write integer to file descriptor |
 
-## `int ft_atoi(const char *str);`
-Converts string to integer.
+### Bonus: Linked List Functions (9 functions)
 
-## `void *ft_calloc(size_t count, size_t size);`
-Allocates zero-initialized memory.
+Functions to manipulate singly linked lists using the `t_list` structure.
 
-## `char *ft_itoa(int n);`
-Converts integer to string.
-
----
-
-# 6️⃣ Advanced String Manipulation
-
-## `char *ft_substr(char const *s, unsigned int start, size_t len);`
-Extracts substring.
-
-## `char *ft_strjoin(char const *s1, char const *s2);`
-Concatenates two strings.
-
-## `char *ft_strtrim(char const *s1, char const *set);`
-Trims characters from both ends.
-
-## `char **ft_split(char const *s, char c);`
-Splits string by delimiter.
-
-## `char *ft_strmapi(char const *s, char (*f)(unsigned int, char));`
-Maps function over string, returns new string.
-
-## `void ft_striteri(char *s, void (*f)(unsigned int, char *));`
-Applies function to each character in place.
-
----
-
-# 7️⃣ File Descriptor Output
-
-## `void ft_putchar_fd(char c, int fd);`
-Writes character `c` to fd.
-
-## `void ft_putstr_fd(char *s, int fd);`
-Writes string to fd.
-
-## `void ft_putendl_fd(char *s, int fd);`
-Writes string with newline.
-
-## `void ft_putnbr_fd(int n, int fd);`
-Writes integer `n` to fd.
-
----
-
-# 🌿 Bonus Functions (Linked Lists)
-
-### Linked List Structure
+#### Structure Definition
 
 ```c
 typedef struct s_list
 {
-    void            *content;
-    struct s_list   *next;
+    void          *content;
+    struct s_list *next;
 }   t_list;
+```
+
+#### List Functions
+
+| Function | Description |
+|----------|-------------|
+| `ft_lstnew` | Create new list node |
+| `ft_lstadd_front` | Add node at beginning of list |
+| `ft_lstadd_back` | Add node at end of list |
+| `ft_lstsize` | Count list nodes |
+| `ft_lstlast` | Get last node of list |
+| `ft_lstdelone` | Delete single node |
+| `ft_lstclear` | Delete all nodes in list |
+| `ft_lstiter` | Apply function to each node's content |
+| `ft_lstmap` | Apply function and create new list |
+
+---
+
+## 🔧 Technical Decisions
+
+### Design Choices
+
+#### 1. **Memory Safety**
+
+All functions that allocate memory perform null checks and return NULL on allocation failure. This prevents undefined behavior and makes error handling predictable.
+
+```c
+char *result = malloc(size);
+if (!result)
+    return (NULL);
+```
+
+#### 2. **Norminette Compliance**
+
+The entire project strictly adheres to the 42 Norminette coding standard:
+- Maximum 25 lines per function
+- Maximum 80 characters per line
+- Maximum 5 functions per file
+- Specific naming conventions and formatting rules
+
+#### 3. **Static Helper Functions**
+
+Complex functions use static helper functions to maintain modularity while keeping helpers private to their file:
+
+```c
+static int helper_function(int n)
+{
+    // Helper logic
+}
+```
+
+#### 4. **Edge Case Handling**
+
+All functions handle edge cases properly:
+- NULL pointers (when appropriate)
+- Empty strings
+- Zero sizes
+- Boundary values (INT_MIN, INT_MAX)
+
+#### 5. **No Global Variables**
+
+Following the subject requirements, no global variables are used. All state is passed through function parameters or stored in allocated memory.
+
+### Implementation Highlights
+
+#### `ft_split` - Most Complex Function
+
+The `ft_split` function is arguably the most challenging, requiring:
+1. Dynamic memory allocation for the array of strings
+2. Counting substrings separated by delimiter
+3. Allocating each substring individually
+4. Proper cleanup on allocation failure
+
+Strategy used: Two-pass approach (count then allocate) with careful memory management.
+
+#### `ft_memmove` - Overlap Handling
+
+Unlike `ft_memcpy`, `ft_memmove` handles overlapping memory regions by detecting the overlap direction and copying accordingly:
+
+```c
+if (dest < src)
+    copy_forward();
+else
+    copy_backward();
+```
+
+#### `ft_lstmap` - Complex List Operation
+
+Creates a new list by applying a function to each node, with proper error handling to delete the new list if any allocation fails.
+
+---
+
+## 📚 Resources
+
+### Official Documentation
+
+- [C Library Documentation](https://en.cppreference.com/w/c) - Comprehensive C standard library reference
+- [Man Pages](https://linux.die.net/man/) - Unix/Linux manual pages for all libc functions
+- [42 Docs](https://harm-smits.github.io/42docs/) - Community-maintained 42 documentation
+
+### Learning Resources
+
+#### Understanding C Fundamentals
+- [Beej's Guide to C Programming](https://beej.us/guide/bgc/) - Excellent beginner-friendly C guide
+- [CS50](https://cs50.harvard.edu/x/) - Harvard's introduction to computer science
+- [The C Programming Language](https://en.wikipedia.org/wiki/The_C_Programming_Language) (K&R) - The definitive C book
+
+#### Memory Management
+- [Understanding Memory](https://www.youtube.com/watch?v=F0Ri2TpRBBg) - Video tutorial on memory layout
+- [Valgrind Documentation](https://valgrind.org/docs/manual/quick-start.html) - Memory leak detection
+- [GDB Tutorial](https://www.gdbtutorial.com/) - Debugging with GDB
+
+#### Linked Lists
+- [Linked List Basics](https://www.learn-c.org/en/Linked_lists) - Interactive tutorial
+- [Visualgo](https://visualgo.net/en/list) - Visual representation of linked lists
+
+### Testing Tools
+
+- [libft-unit-test](https://github.com/alelievr/libft-unit-test) - Comprehensive test suite
+- [libftTester](https://github.com/Tripouille/libftTester) - Popular 42 student tester
+- [francinette](https://github.com/xicodomingues/francinette) - Automated testing framework
+- [war-machine](https://github.com/0x050f/libft-war-machine) - Classic libft tester
+
+### AI Usage Disclosure
+
+This project was completed primarily through:
+
+1. **Manual research and implementation** - Reading documentation, understanding algorithms, and writing code
+2. **Peer learning** - Discussions with other 42 students about approaches and edge cases
+3. **AI assistance for**:
+   - **Documentation generation** - Structuring this README and code comments
+   - **Research guidance** - Finding relevant resources and documentation
+   - **Code review** - Identifying potential edge cases and suggesting improvements
+   - **NOT for direct code generation** - All function logic was implemented through understanding and manual coding
+
+The learning process focused on truly understanding each function's behavior rather than copying implementations, ensuring deep comprehension that will benefit future projects.
+
+### Style and Standards
+
+- [42 Norminette](https://github.com/42School/norminette) - Official 42 coding standard
+- [GNU Coding Standards](https://www.gnu.org/prep/standards/) - Industry coding practices
+
+---
+
+## 🧪 Testing
+
+### Manual Testing
+
+Each function includes test cases covering:
+- Normal operations
+- Edge cases (NULL, empty strings, boundary values)
+- Memory leak verification
+
+Example test file:
+
+```c
+#include "libft.h"
+#include <stdio.h>
+
+int main(void)
+{
+    // Test ft_strlen
+    printf("ft_strlen(\"Hello\"): %zu\n", ft_strlen("Hello"));
+    
+    // Test ft_strdup
+    char *dup = ft_strdup("Test");
+    printf("ft_strdup: %s\n", dup);
+    free(dup);
+    
+    return (0);
+}
+```
+
+### Automated Testing
+
+Run external testers for comprehensive validation:
+
+```bash
+# Clone and run a tester
+git clone https://github.com/Tripouille/libftTester
+cd libftTester
+./grademe.sh
+```
+
+### Memory Leak Detection
+
+Use Valgrind to ensure no memory leaks:
+
+```bash
+valgrind --leak-check=full --show-leak-kinds=all ./your_test
+```
+
+Expected output:
+```
+All heap blocks were freed -- no leaks are possible
+```
+
+### Norm Checking
+
+Verify code complies with 42 standards:
+
+```bash
+norminette *.c *.h
+```
+
+Should return:
+```
+All files passed norminette check
 ```
 
 ---
 
-## `t_list *ft_lstnew(void *content);`
-Creates a new node with given content.
+## 📄 License
+
+This project is part of the 42 School curriculum. It follows the school's open-source policy where students can share their work for educational purposes.
 
 ---
 
-## `void ft_lstadd_front(t_list **lst, t_list *new);`
-Adds a node at the beginning of the list.
+## 🎯 Project Status
+
+- ✅ All mandatory functions implemented
+- ✅ All bonus functions implemented
+- ✅ Passes norminette
+- ✅ No memory leaks
+- ✅ Comprehensive documentation
+- ✅ Tested with multiple test suites
+
+## 🙏 Acknowledgments
+
+- **42 School** for the comprehensive curriculum
+- **42 Community** for peer support and knowledge sharing
+- **Open-source contributors** who created testing tools
+- **Fellow students** for valuable discussions and insights
 
 ---
 
-## `int ft_lstsize(t_list *lst);`
-Returns number of nodes in the list.
-
----
-
-## `t_list *ft_lstlast(t_list *lst);`
-Returns last node of list.
-
----
-
-## `void ft_lstadd_back(t_list **lst, t_list *new);`
-Adds node to the end of list.
-
----
-
-## `void ft_lstdelone(t_list *lst, void (*del)(void *));`
-Deletes a single node using `del` to free content.
-
----
-
-## `void ft_lstclear(t_list **lst, void (*del)(void *));`
-Deletes entire list and frees memory.
-
----
-
-## `void ft_lstiter(t_list *lst, void (*f)(void *));`
-Applies function `f` to each node’s content.
-
----
-
-## `t_list *ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));`
-Creates a new list by applying `f` to each node of the original.  
-Uses `del` to handle memory on error.
-
----
-
-# ✅ Summary
-
-Libft teaches:
-- Memory and pointer manipulation  
-- String handling  
-- Safe low-level programming  
-- Data structures (linked lists)  
-- Building static libraries  
-- Clean modular C development  
-
-It becomes the base for future 42 projects like:  
-`get_next_line`, `ft_printf`, `push_swap`, `minishell`, and more.
+**Note**: This README provides a complete overview of the project. For specific function implementations and detailed code explanations, refer to the source files and inline comments.
